@@ -9,12 +9,14 @@ const app = express()
 const port = process.env.PORT || 4000
 
 app.use(bodyParser.json())
-app.use(cors({
-  origin: 'https://zoom-vue.vercel.app/',
-  credentials: true, // allow session cookie from browser
-  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
-})) 
-app.options('*', cors())
+app.use(cors()) 
+app.options('*', cors({
+  origin: '*',
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  headers: ['content-type', 'authorization', 'accept', 'x-requested-with'],
+  exposeHeaders: ['content-type']
+}))
 
 app.post('/', (req, res) => {
   try {
