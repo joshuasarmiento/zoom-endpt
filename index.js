@@ -10,15 +10,20 @@ const port = process.env.PORT || 4000
 
 app.use(bodyParser.json())
 app.use(cors()) 
-app.options('*', cors({
-  origin: '*',
-  credentials: true, 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  headers: ['content-type', 'authorization', 'accept', 'x-requested-with'],
-  exposeHeaders: ['content-type']
-}))
+// app.options('*', cors({
+//   origin: '*',
+//   credentials: true, 
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   headers: ['content-type', 'authorization', 'accept', 'x-requested-with'],
+//   exposeHeaders: ['content-type']
+// }))
+app.options('/', cors());
 
 app.post('/', (req, res) => {
+
+  // res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, z-sdk-version");
+
   try {
     const iat = Math.round(new Date().getTime() / 1000) - 30;
     const exp = iat + 60 * 60 * 2
@@ -39,9 +44,6 @@ app.post('/', (req, res) => {
     const sPayload = JSON.stringify(oPayload)
     const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, process.env.ZOOM_MEETING_SDK_SECRET)
     
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, z-sdk-version");
-
     res.json({
       signature: signature
     });
