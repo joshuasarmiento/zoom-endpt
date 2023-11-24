@@ -10,7 +10,7 @@ const port = process.env.PORT || 4000
 
 app.use(bodyParser.json())
 app.use(cors({
-  origin: '*',
+  origin: 'https://zoom-vue.onevillar.ph',
   credentials: true, // allow session cookie from browser
   allowedHeaders: ['Content-Type']
 })) 
