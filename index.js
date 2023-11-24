@@ -27,10 +27,6 @@ app.use('/', createProxyMiddleware({
 }));
 
 app.post('/', (req, res) => {
-
-  // res.header("Access-Control-Allow-Origin", "*");
-  // res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, z-sdk-version");
-
   try {
     const iat = Math.round(new Date().getTime() / 1000) - 30;
     const exp = iat + 60 * 60 * 2
