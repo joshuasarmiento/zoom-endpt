@@ -9,7 +9,10 @@ const app = express()
 const port = process.env.PORT || 4000
 
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+  origin: '*',
+  credentials: true // allow session cookie from browser
+})) 
 app.options('*', cors())
 
 app.post('/', (req, res) => {
