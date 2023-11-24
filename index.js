@@ -10,7 +10,11 @@ const app = express()
 const port = process.env.PORT || 4000
 
 app.use(bodyParser.json())
-app.options('*', cors())
+app.options('*', cors({
+  origin: '*', // You can restrict the origin here
+  methods: ['GET', 'POST', 'DELETE', 'PUT'], // Allowed HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allowed Headers
+}))
 
 const allowCors = fn => async (req, res) => {
   res.setHeader('Access-Control-Allow-Credentials', true)
