@@ -4,7 +4,8 @@ const bodyParser = require('body-parser')
 const crypto = require('crypto')
 const cors = require('cors')
 const KJUR = require('jsrsasign')
-  
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 const app = express()
 const port = process.env.PORT || 4000
 
@@ -17,8 +18,13 @@ const corsOptions = {
 }
 
 app.use(bodyParser.json())
-app.use(cors()) 
-app.options('*', cors(corsOptions))
+app.use(cors(corsOptions)) 
+app.options('*', cors())
+
+app.use('/', createProxyMiddleware({
+  target: 'https://zoom-endpt.vercel.app/', 
+  changeOrigin: true,
+}));
 
 app.post('/', (req, res) => {
 
