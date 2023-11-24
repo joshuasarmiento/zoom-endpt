@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 app.use(cors({
   origin: 'https://zoom-vue.vercel.app/',
   credentials: true, // allow session cookie from browser
-  allowedHeaders: ['Content-Type']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With', 'Accept']
 })) 
 app.options('*', cors())
 
