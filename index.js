@@ -4,27 +4,33 @@ const bodyParser = require('body-parser')
 const crypto = require('crypto')
 const cors = require('cors')
 const KJUR = require('jsrsasign')
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// const { createProxyMiddleware } =   require('http-proxy-middleware');
 
 const app = express()
 const port = process.env.PORT || 4000
 
 const corsOptions = {
   origin: '*',
-  credentials: true, 
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  headers: ['content-type', 'authorization', 'accept', 'x-requested-with'],
-  exposeHeaders: ['content-type']
-}
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+  exposedHeaders: ['Content-Type'],
+};
 
 app.use(bodyParser.json())
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+ });
+ 
 app.use(cors(corsOptions)) 
 app.options('*', cors())
 
-app.use('/', createProxyMiddleware({
-  target: 'https://zoom-endpt.vercel.app/', 
-  changeOrigin: true,
-}));
+// app.use('/', createProxyMiddleware({
+//   target: 'https://zoom-endpt.vercel.app/', 
+//   changeOrigin: true,
+// }));
+app.options('/', cors(corsOptions));
 
 app.post('/', (req, res) => {
   try {
