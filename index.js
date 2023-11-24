@@ -9,35 +9,22 @@ const KJUR = require('jsrsasign')
 const app = express()
 const port = process.env.PORT || 4000
 
-const corsOptions = {
-  origin: '*',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
-  exposedHeaders: ['Content-Type'],
-};
+// const corsOptions = {
+//   origin: '*',
+//   credentials: true,
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+//   exposedHeaders: ['Content-Type'],
+// };
 
 app.use(bodyParser.json())
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  next();
-})
-  
-app.use(cors(corsOptions)) 
+app.use(cors()) 
 app.options('*', cors())
 
 // app.use('/', createProxyMiddleware({
 //   target: 'https://zoom-endpt.vercel.app/', 
 //   changeOrigin: true,
 // }));
-
-app.options('/', (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With");
-  res.status(200).end();
-});
 
 app.post('/', (req, res) => {
   try {
