@@ -37,6 +37,9 @@ app.post('/', (req, res) => {
     const sPayload = JSON.stringify(oPayload)
     const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, process.env.ZOOM_MEETING_SDK_SECRET)
     
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, z-sdk-version");
+
     res.json({
       signature: signature
     });
