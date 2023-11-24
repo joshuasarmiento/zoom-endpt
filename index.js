@@ -26,35 +26,48 @@ app.options('*', cors())
 //   changeOrigin: true,
 // }));
 
-app.post('/', (req, res) => {
-  try {
-    const iat = Math.round(new Date().getTime() / 1000) - 30;
-    const exp = iat + 60 * 60 * 2
-
-    const oHeader = { alg: 'HS256', typ: 'JWT' }
-
-    const oPayload = {
-      sdkKey: process.env.ZOOM_MEETING_SDK_KEY,
-      mn: req.body.meetingNumber,
-      role: req.body.role,
-      iat: iat,
-      exp: exp,
-      appKey: process.env.ZOOM_MEETING_SDK_KEY,
-      tokenExp: iat + 60 * 60 * 2
-    }
-
-    const sHeader = JSON.stringify(oHeader)
-    const sPayload = JSON.stringify(oPayload)
-    const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, process.env.ZOOM_MEETING_SDK_SECRET)
-    
-    res.json({
-      signature: signature
-    });
-
-  } catch(error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+const allowCors = fn => async (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  // another common pattern
+  // res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  )
+  if (req.method === 'OPTIONS') {
+    res.status(200).end()
+    return
   }
-})
+  return await fn(req, res)
+}
+
+const handler = (req, res) => {
+  const iat = Math.round(new Date().getTime() / 1000) - 30;
+  const exp = iat + 60 * 60 * 2
+ 
+  const oHeader = { alg: 'HS256', typ: 'JWT' }
+ 
+  const oPayload = {
+    sdkKey: process.env.ZOOM_MEETING_SDK_KEY,
+    mn: req.body.meetingNumber,
+    role: req.body.role,
+    iat: iat,
+    exp: exp,
+    appKey: process.env.ZOOM_MEETING_SDK_KEY,
+    tokenExp: iat + 60 * 60 * 2
+  }
+ 
+  const sHeader = JSON.stringify(oHeader)
+  const sPayload = JSON.stringify(oPayload)
+  const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, process.env.ZOOM_MEETING_SDK_SECRET)
+  
+  res.json({
+    signature: signature
+  });
+ }
+ 
+ app.post('/', allowCors(handler))
 
 app.listen(port, () => console.log(`Zoom Meeting SDK Auth Endpoint Sample Node.js listening on port ${port}!`))
