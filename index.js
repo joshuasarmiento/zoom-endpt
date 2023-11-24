@@ -53,6 +53,10 @@ const handler = (req, res) => {
   const sPayload = JSON.stringify(oPayload)
   const signature = KJUR.jws.JWS.sign('HS256', sHeader, sPayload, process.env.ZOOM_MEETING_SDK_SECRET)
   
+  res.header('Access-Control-Allow-Origin', 'https://zoom-vue.vercel.app');  // Add this line
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');  // Add this line
+  res.header('Access-Control-Allow-Headers', 'Content-Type');  // Add this line
+
   res.json({
     signature: signature
   });
