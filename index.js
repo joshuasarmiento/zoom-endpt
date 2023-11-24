@@ -8,21 +8,22 @@ const KJUR = require('jsrsasign')
 const app = express()
 const port = process.env.PORT || 4000
 
+const corsOptions = {
+  origin: '*',
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  headers: ['content-type', 'authorization', 'accept', 'x-requested-with'],
+  exposeHeaders: ['content-type']
+}
+
 app.use(bodyParser.json())
 app.use(cors()) 
-// app.options('*', cors({
-//   origin: '*',
-//   credentials: true, 
-//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   headers: ['content-type', 'authorization', 'accept', 'x-requested-with'],
-//   exposeHeaders: ['content-type']
-// }))
-app.options('/', cors());
+app.options('*', cors(corsOptions))
 
 app.post('/', (req, res) => {
 
   // res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, z-sdk-version");
+  // res.header("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, X-Requested-With, z-sdk-version");
 
   try {
     const iat = Math.round(new Date().getTime() / 1000) - 30;
