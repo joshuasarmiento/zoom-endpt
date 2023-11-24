@@ -31,7 +31,13 @@ app.options('*', cors())
 //   target: 'https://zoom-endpt.vercel.app/', 
 //   changeOrigin: true,
 // }));
-app.options('/', cors(corsOptions));
+
+app.options('/', (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, X-Requested-With");
+  res.status(200).end();
+});
 
 app.post('/', (req, res) => {
   try {
